@@ -3,8 +3,7 @@
 - [ ] Treap
 - [x] Fenwick
 - [ ] Seg
-- [ ] Sqrt
-- [ ] Mo’s
+- [x] Sqrt
 
 **Graphs**
 - [ ] DSU
@@ -66,3 +65,4 @@
 - [ ] linear recurrence (fibonacci) in log n
 - [ ] prefix aggregation
 - [ ] diff arr
+- [ ] Mo’s
