@@ -6,15 +6,15 @@ def solve():
 
     it = iter(input_dat)
     out = []
-   
+    
     I = lambda : int(next(it)) 
     S = lambda : next(it) 
     O = out.append
-   
+    
     t = I()
     for _ in range(t):
         pass#ans
-
+        
     print("\n".join(map(str,out)))
 
 solve()

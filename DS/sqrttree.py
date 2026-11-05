@@ -15,7 +15,6 @@ class SqrtTree:
         s.blocks[b][i] = delta
         s.sums[b] += (delta - old_val)          #op
 
-
     def query(s, L, R): #inclusive, 0-indexing
         b1, i1 = L // s.B, L % s.B
         b2, i2 = R // s.B, R % s.B
