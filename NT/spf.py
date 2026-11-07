@@ -12,9 +12,12 @@ def build_spf(n):
 spf = build_spf(10**5)
 
 def prime_factorize(n): # O(log n)
-    from collections import defaultdict
-    factors = defaultdict(int)
+    f = []
     while n>1:
-        factors[spf[n]]+=1
-        n//=spf[n]
-    return factors
+        p = spf[n]
+        temp = 0
+        while spf[n]==p:
+            n//=p
+            temp+=1
+        f.append((p,temp))
+    return f

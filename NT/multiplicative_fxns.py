@@ -1,27 +1,16 @@
-# These are O(log n) iff prime factorization is O(log n)
-# prime_factorize must return { p:e }
+# These are O( max(log n, time taken to factorize) ) 
+# prime_factorize must return [(p,e)]
+
+from math import prod
 
 def tau(n): # number of divisors
-    primes = prime_factorize(n)
-    d = 1
-    for p,e in primes.items():
-        d*=e+1
-    return d
+    f = prime_factorize(n)
+    return prod(e+1 for p,e in f)
 
 def sigma(n): # sum of divisors
-    primes = prime_factorize(n) 
-    s = 1
-    for p,e in primes.items():
-        s*= (p**(e+1)-1)//(p-1)
-    return s
+    f = prime_factorize(n) 
+    return prod((p**(e+1)-1)//(p-1) for p,e in f)
 
 def phi(n): # Euler's totient
-    primes = prime_factorize(n) 
-    f = 1
-    for p,e in primes.items():
-        f*=(p-1) * p**(e-1)
-    return f
-
-
-
-
+    f = prime_factorize(n) 
+    return prod((p-1)*p**(e-1) for p,e in f)
