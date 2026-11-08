@@ -13,7 +13,7 @@ class SqrtTree:
 
         old_val = s.blocks[b][i]
         s.blocks[b][i] = delta
-        s.sums[b] += (delta - old_val)          #op
+        s.sums[b] += (delta - old_val)          # sum
 
     def query(s, L, R): #inclusive, 0-indexing
         b1, i1 = L // s.B, L % s.B
