@@ -1,31 +1,39 @@
 from math import isqrt
 
 class SqrtTree:
-    def __init__(s, a): #iterable
-        s.n = len(a)
+    def __init__(s, a): 
+        s.a = list(a)
+        s.n = len(s.a)
         s.B = max(1, isqrt(s.n))
-        s.blocks = [a[i:i+s.B] for i in range(0,s.n,s.B)]
-        s.sums = [sum(b) for b in s.blocks]     #
+        
+        s.sums = [0] * ((s.n + s.B - 1) // s.B)
+        for i in range(s.n):
+            s.sums[i // s.B] += s.a[i]                  # sum
 
-    def update(s,x,delta):
+    def assign(s, x, y):
         b = x // s.B
-        i = x % s.B
+        old = s.a[x]
+        s.a[x] = y
+        s.sums[b] += (y - old)                          # invertible only
 
-        old_val = s.blocks[b][i]
-        s.blocks[b][i] = delta
-        s.sums[b] += (delta - old_val)          # sum
+    def add(s, x, delta): 
+        s.a[x] += delta
+        s.sums[x // s.B] += delta                       # 
 
-    def query(s, L, R): #inclusive, 0-indexing
-        b1, i1 = L // s.B, L % s.B
-        b2, i2 = R // s.B, R % s.B
+    def query(s, L, R): 
+        b1, b2 = L // s.B, R // s.B
+        ans = 0                                         # identity value
 
         if b1 == b2:
-            return sum(s.blocks[b1][i1:i2+1])   #
+            for i in range(L, R + 1):
+                ans += s.a[i]                           # 
+            return ans
 
-        ans = sum(s.blocks[b1][i1:])            #
+        for i in range(L, (b1 + 1) * s.B):
+            ans += s.a[i]                               # 
+        for b in range(b1 + 1, b2):
+            ans += s.sums[b]                            # 
+        for i in range(b2 * s.B, R + 1):
+            ans += s.a[i]                               # 
 
-        for b in range(b1+1,b2):
-            ans += s.sums[b]                    #
-
-        ans += sum(s.blocks[b2][:i2+1])         #
         return ans

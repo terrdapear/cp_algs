@@ -1,53 +1,58 @@
-def ext_eucl(a,b): # O(log n) returns x, y, g 
-    if (b==0): # ax + by = g
-        return 1,0,a
-    x1,y1,g = ext_eucl(b,a%b)
-    x = y1
-    y = x1 - y1*(a//b)
-    return x,y,g
+def ext_eucl(a, b): # O(log min(a, b)) 
+    x0, x1, y0, y1 = 1, 0, 0, 1
+    while b:
+        q = a // b
+        a, b = b, a % b
+        x0, x1 = x1, x0 - q * x1
+        y0, y1 = y1, y0 - q * y1
+    return x0, y0, a
 
-def find_solutions(a,b,c,ks=range(-2, 3)):
-    x0,y0,g = extgcd(a,b)
+def find_solutions(a, b, c, ks=range(-2, 3)):
+    if a == 0 and b == 0:
+        return [(0, 0)] if c == 0 else []
     
+    x0, y0, g = ext_eucl(abs(a), abs(b))
     if c % g != 0:
-        return []  # no sol
-    
-    x_base = x0 * (c // g)
-    y_base = y0 * (c // g)
-    
-    step_x = b // g
-    step_y = a // g
-    
-    solutions = []
-    for k in ks:
-        x = x_base + k * step_x
-        y = y_base - k * step_y
-        solutions.append((x, y))
-        
-    return solutions
+        return []
 
-import math
-
-def count_solutions(a, b, c, min_x, max_x, min_y, max_y):
-    x0, y0, g = extgcd(a, b)
-    
-    if c % g != 0:
-        return 0
-    
     x0 *= c // g
     y0 *= c // g
-    
-    dx,dy = b//g , a//g
-    
-    def get_k_bounds(val0, step, low_b, high_b):
-        k1 = (low_b - val0) / step
-        k2 = (high_b - val0) / step
-        return (min(k1, k2), max(k1, k2))
+    if a < 0: x0 = -x0
+    if b < 0: y0 = -y0
 
-    kx_min, kx_max = get_k_bounds(x0, dx, min_x, max_x)
-    ky_min, ky_max = get_k_bounds(y0, -dy, min_y, max_y)
+    dx = (b // g) if b != 0 else 0
+    dy = (a // g) if a != 0 else 0
     
-    k_low = math.ceil(max(kx_min, ky_min))
-    k_high = math.floor(min(kx_max, ky_max))
-    
+    return [(x0 + k * dx, y0 - k * dy) for k in ks]
+
+def count_solutions(a, b, c, lx, rx, ly, ry):
+    if a == 0 and b == 0:
+        return (rx - lx + 1) * (ry - ly + 1) if c == 0 else 0
+    if a == 0:
+        return rx - lx + 1 if c % b == 0 and ly <= c // b <= ry else 0
+    if b == 0:
+        return ry - ly + 1 if c % a == 0 and lx <= c // a <= rx else 0
+
+    x0, y0, g = ext_eucl(abs(a), abs(b))
+    if c % g != 0:
+        return 0
+
+    x0 *= c // g
+    y0 *= c // g
+    if a < 0: x0 = -x0
+    if b < 0: y0 = -y0
+
+    dx, dy = b // g, a // g
+
+    def get_k_range(val0, step, low, high):
+        if step > 0:
+            return -((low - val0) // -step), (high - val0) // step
+        return -((high - val0) // -step), (low - val0) // step
+
+    kx_min, kx_max = get_k_range(x0, dx, lx, rx)
+    ky_min, ky_max = get_k_range(y0, -dy, ly, ry)
+
+    k_low = max(kx_min, ky_min)
+    k_high = min(kx_max, ky_max)
+
     return max(0, k_high - k_low + 1)
